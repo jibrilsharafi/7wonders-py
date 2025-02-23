@@ -32,3 +32,33 @@ class Action(Enum):
     PLAY_CARD = auto()
     BUILD_WONDER = auto()
     DISCARD = auto()
+
+
+CARD_TYPE_MAP = {
+    "raw_material": CardType.RAW_MATERIAL,
+    "manufactured_good": CardType.MANUFACTURED_GOOD,
+    "civilian": CardType.CIVILIAN,
+    "commercial": CardType.COMMERCIAL,
+    "military": CardType.MILITARY,
+    "scientific": CardType.SCIENTIFIC,
+    "guild": CardType.GUILD,
+}
+
+
+RESOURCE_MAP = {
+    "W": Resource.WOOD,
+    "S": Resource.STONE,
+    "O": Resource.ORE,
+    "B": Resource.BRICK,
+    "F": Resource.GLASS,  # F for "fire" (glass) to avoid conflict with G for "gear"
+    "P": Resource.PAPYRUS,
+    "L": Resource.LOOM,
+    "$": Resource.COIN,
+}
+
+
+SCIENCE_SYMBOL_MAP = {
+    "T": ScienceSymbol.TABLET,
+    "C": ScienceSymbol.COMPASS,
+    "G": ScienceSymbol.GEAR,
+}

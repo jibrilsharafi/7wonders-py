@@ -25,3 +25,19 @@ class Wonder:
     name: str
     resource: Resource
     stages: List[WonderStage]
+
+@dataclass
+class Score:
+    military: int = 0
+    treasury: int = 0
+    wonders: int = 0
+    civilian: int = 0
+    scientific: int = 0
+    commercial: int = 0
+    guilds: int = 0
+    
+    @property
+    def total(self) -> int:
+        return (self.military + self.treasury + self.wonders +
+                self.civilian + self.scientific + self.commercial +
+                self.guilds)
