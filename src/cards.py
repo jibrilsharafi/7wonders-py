@@ -7,51 +7,6 @@ from enum import Enum
 from game_types import Age, Card, Resource, CardType, CardCost, ScienceSymbol
 
 
-class Deck:
-    def __init__(self, cards: List[Card]):
-        self.cards = cards
-
-
-class CardsCsvHeaders(Enum):
-    AGE = "age"
-    MIN_PLAYERS = "min_players"
-    NAME = "name"
-    TYPE = "type"
-    COST = "cost"
-    CHAINED_BUILDINGS = "chained_buildings"
-    EFFECT = "effect"
-    COINS = "coins"
-    VICTORY_POINTS = "victory_points"
-    MILITARY_SHIELDS = "military_shields"
-    SCIENCE_SYMBOL = "science_symbol"
-
-
-RESOURCE_MAP = {
-    "W": Resource.WOOD,
-    "S": Resource.STONE,
-    "O": Resource.ORE,
-    "B": Resource.BRICK,
-    "G": Resource.GLASS,
-    "P": Resource.PAPYRUS,
-    "L": Resource.LOOM,
-}
-
-CARD_TYPE_MAP = {
-    "raw_material": CardType.RAW_MATERIAL,
-    "manufactured_good": CardType.MANUFACTURED_GOOD,
-    "civilian": CardType.CIVILIAN,
-    "commercial": CardType.COMMERCIAL,
-    "military": CardType.MILITARY,
-    "scientific": CardType.SCIENTIFIC,
-    "guild": CardType.GUILD,
-}
-
-
-SCIENCE_SYMBOL_MAP = {
-    "T": ScienceSymbol.TABLET,
-    "C": ScienceSymbol.COMPASS,
-    "G": ScienceSymbol.GEAR,
-}
 
 
 def parse_card(row: Dict[str, str]) -> Card:
@@ -63,7 +18,7 @@ def parse_card(row: Dict[str, str]) -> Card:
 
     cost = parse_card_cost(row[CardsCsvHeaders.COST.value])
 
-    chain_builds = row[CardsCsvHeaders.CHAINED_BUILDINGS.value].split(" | ")
+    chain_builds = row[CardsCsvHeaders.CHAIN_TO.value].split(" | ")
 
     resources_produced = parse_resource_effect(row[CardsCsvHeaders.EFFECT.value])
 
