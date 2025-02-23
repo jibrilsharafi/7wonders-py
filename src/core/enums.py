@@ -9,6 +9,7 @@ class Resource(Enum):
     GLASS = auto()
     PAPYRUS = auto()
     LOOM = auto()
+    COIN = auto()
 
 
 class ScienceSymbol(Enum):
@@ -25,12 +26,6 @@ class CardType(Enum):
     MILITARY = auto()
     SCIENTIFIC = auto()
     GUILD = auto()
-
-
-class Age(Enum):
-    ONE = auto()
-    TWO = auto()
-    THREE = auto()
 
 
 class Action(Enum):

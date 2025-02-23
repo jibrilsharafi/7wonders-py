@@ -1,8 +1,8 @@
 name,resource,day_stages,night_stages
-alexandria,G,[[SS;V3];[OO;+resource{W/S/O/B}];[GG;V7]],[[BB;+resource{W/S/O/B}];[WW;G/L/P];[SSS;V7]]
-babylon,B,[[BB;V3];[OOP;+science{C/T/G}];[WWWW;V7]],[[SS;play_both_last];[BBBG;+resource{W/S/O/B}]]
-ephesus,P,[[BB;V3];[WW;$9];[OOG;V7]],[[SS;$4-V2];[WW;$4-V3];[LG;$4-V5]]
-giza,S,[[WW;V3];[BBP;V5];[SSSS;V7]],[[WW;V3];[SSS;V5];[BBB;V5];[SSSSP;V7]]
-halicarnassus,L,[[OO;V3];[GP;build_discard];[SSS;V7]],[[BB;V2-build_discard];[GP;V1-build_discard];[WWW;build_discard]]
-olympia,W,[[SS;V3];[WW;free_color_card];[BBB;V7]],[[OO;V2-free_first_age_card];[BBB;V3-free_last_age_card];[GPL;V5]]
-rhodes,O,[[WW;V3];[BBB;M2];[OOOO;V7]],[[SSS;$3-V3-M1];[OOOO;$4-V4-M1]]
+alexandria,F,SS;VVV|OO;+resource{W/S/O/B}|PL;VVVVVVV,BB;+resource{W/S/O/B}|OOO;+resource{F/L/P}|WWWW;VVVVVVV
+babylon,W,BB;VVV|OOL;+science{C/T/G}|WWWW;VVVVVVV,SS;play_both_last|BBBF;+resource{W/S/O/B}
+ephesus,P,BB;VVV|WW;$$$$$$$$$|OOF;VVVVVVV,SS;$$$$-VV|WW;$$$$-VVV|OOL;$$$$-VVVVV
+giza,S,WW;VVV|BBL;VVVVV|SSSS;VVVVVVV,WW;VVV|SSS;VVVVV|BBB;VVVVV|SSSSP;VVVVVVV
+halicarnassus,L,OO;VVV|FP;build_discard|SSS;VVVVVVV,BB;VV-build_discard|FP;V-build_discard|WWW;build_discard
+olympia,W,SS;VVV|WW;free_color_card|BBB;VVVVVVV,OO;VV-free_first_age_card|BBB;VVV-free_last_age_card|FPL;VVVVV
+rhodes,O,WW;VVV|BBB;MM|OOOO;VVVVVVV,SSS;$$$-VVV-M|OOOO;$$$$-VVVV-M

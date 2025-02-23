@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict
 from .enums import Resource, CardType, ScienceSymbol
 
 # The effect will hold a string that will be parsed by the game engine
@@ -11,13 +11,13 @@ class Card:
     type: CardType
     age: int
     min_players: int
-    cost: str
-    chain_to: Optional[str]
+    cost: Dict[Resource, int]
+    chain_to: Optional[List[str]]
     effect: str
 
 @dataclass
 class WonderStage:
-    cost: str
+    cost: Dict[Resource, int]
     effect: str
 
 @dataclass
