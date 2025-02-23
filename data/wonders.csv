@@ -1,8 +1,8 @@
-city name, full name, free slot, A side count, ..., B side count, ...
-rhodes, the colossus of rhodes, O, 3, WW, BBB, VVV, 2 shields, OOOO, VVVVVVV, 2, SSS, $$$VVVshield, OOOO$$$$VVVVshield
-alexandria, the lighthouse of alexandria, G, 3, SS, VVV, OO, B/O/W/S, GG, VVVVVVV, 3, BB, B/O/W/S, WW, G/L/P, SSS, VVVVVVV
-ephesus, the temple of artemis in ephesus, P, 3, SS, VVV, WW, $$$$$$$$$, PP, VVVVVVV, 3, SS, $$$$VV, WW, $$$$VVV, LG, $$$$VVVVV
-babylon, the hanging gardens of babylon, B, 3, BB, VVV, WWW, +{C | T | G}, BBBB, VVVVVVV, 3, BL, VVV, GWW, play both last cards, BBBP, +{C | T | G}
-olympia, the status of zeus in olympia, W, 3, WW, VVV, SS, free card per age, OO, VVVVVVV, 3, WW, -${WOBS} <>, SS, VVVVV, LOO, +{purple}</>
-halicarnassus, the mausoleum of halicarnassus, L, 3, BB, VVV, OOO, build free discarded card, LL, VVVVVVV, 3, OO, VV + build free discarded card, BBB, V + build free discarded card, GLP, build free discarded card
-gizah, the pyramids of giza, S, 3, SS, VVV, WWW, VVVVV, SSSS, VVVVVVVV, 4, WW, VVV, SSS, VVVVV, BBB, VVVVV, SSSSP, VVVVVVV
+name,resource,day_stages,night_stages
+alexandria,G,[[SS;V3];[OO;+resource{W/S/O/B}];[GG;V7]],[[BB;+resource{W/S/O/B}];[WW;G/L/P];[SSS;V7]]
+babylon,B,[[BB;V3];[OOP;+science{C/T/G}];[WWWW;V7]],[[SS;play_both_last];[BBBG;+resource{W/S/O/B}]]
+ephesus,P,[[BB;V3];[WW;$9];[OOG;V7]],[[SS;$4-V2];[WW;$4-V3];[LG;$4-V5]]
+giza,S,[[WW;V3];[BBP;V5];[SSSS;V7]],[[WW;V3];[SSS;V5];[BBB;V5];[SSSSP;V7]]
+halicarnassus,L,[[OO;V3];[GP;build_discard];[SSS;V7]],[[BB;V2-build_discard];[GP;V1-build_discard];[WWW;build_discard]]
+olympia,W,[[SS;V3];[WW;free_color_card];[BBB;V7]],[[OO;V2-free_first_age_card];[BBB;V3-free_last_age_card];[GPL;V5]]
+rhodes,O,[[WW;V3];[BBB;M2];[OOOO;V7]],[[SSS;$3-V3-M1];[OOOO;$4-V4-M1]]

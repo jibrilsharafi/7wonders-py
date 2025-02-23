@@ -1,150 +1,149 @@
-age,min_players,name,type,cost,chained_buildings,effect
-1,3,lumber yard,raw_material,,,W
-1,3,ore vein,raw_material,,,O
-1,3,clay pool,raw_material,,,B
-1,3,stone pit,raw_material,,,S
-1,3,timer yard,raw_material,$,,S/W
-1,3,clay pit,raw_material,$,,B/O
-1,3,loom,manufactured_good,,,L
-1,3,glassworks,manufactured_good,,,G
-1,3,press,manufactured_good,,,P
-1,3,east trading post,commercial,,forum,trade-${WOBS} >
-1,3,west trading post,commercial,,forum,trade-${WOBS} <
-1,3,marketplace,commercial,,caravansery,trade-${GLP} <>
-1,3,altar,civilian,,temple,2
-1,3,theatre,civilian,,statue,2
+age,min_players,name,type,cost,chain_to,effect
+1,3,altar,civilian,,pantheon,3
+1,3,theatre,civilian,,gardens,3
 1,3,baths,civilian,S,aqueduct,3
-1,3,stockade,military,W,,1
-1,3,barracks,military,O,,1
-1,3,guard tower,military,B,,1
-1,3,apothecary,scientific,L,stables | dispensary,C
-1,3,workshop,scientific,G,archery range | laboratory,G
-1,3,scriptorium,scientific,P,courthouse | library,T
-1,4,lumber yard,raw_material,,,W
-1,4,ore vein,raw_material,,,O
-1,4,excavation,raw_material,$,,S/B
-1,4,tavern,commercial,,,$$$$$
-1,4,pawnshop,civilian,,aqueduct,3
-1,4,guard tower,military,B,,1
-1,4,scriptorium,scientific,P,courthouse | library,T
-1,5,clay pool,raw_material,,,B
-1,5,stone pit,raw_material,,,S
-1,5,forest cave,raw_material,,,W/O
-1,5,tavern,commercial,,,$$$$$
-1,5,altar,civilian,,temple,2
-1,5,barracks,military,O,,1
-1,5,apothecary,scientific,L,stables | dispensary,C
-1,6,tree farm,raw_material,,,W/B
-1,6,mine,raw_material,,,S/O
-1,6,loom,manufactured_good,,,L
-1,6,glassworks,manufactured_good,,,G
-1,6,press,manufactured_good,,,P
-1,6,marketplace,commercial,,caravansery,trade-${GLP} <>
-1,6,theatre,civilian,,statue,2
-1,7,east trading post,commercial,,forum,trade-${WOBS} >
-1,7,west trading post,commercial,,forum,trade-${WOBS} <
-1,7,marketplace,commercial,,caravansery,trade-${GLP} <>
-1,7,tavern,commercial,,,$$$$$
+1,4,well,civilian,,statue,3
+1,5,altar,civilian,,pantheon,3
+1,6,theatre,civilian,,gardens,3
 1,7,baths,civilian,S,aqueduct,3
-1,7,pawnshop,civilian,,aqueduct,3
-1,7,stockade,military,W,,1
-2,3,sawmill,raw_material,$,,WW
-2,3,foundry,raw_material,$,,OO
-2,3,brickyard,raw_material,$,,BB
-2,3,quarry,raw_material,$,,SS
-2,3,loom,manufactured_good,,,L
-2,3,glassworks,manufactured_good,,,G
-2,3,press,manufactured_good,,,P
-2,3,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
-2,3,forum,commercial,BB,haven,+resource{G/L/P}
-2,3,vineyard,commercial,,,${raw_material} <v>
-2,3,temple,civilian,WBG,pantheon,3
+1,7,well,civilian,,statue,3
+1,3,east_trading_post,commercial,,forum,trade_{WOBS}_>
+1,3,west_trading_post,commercial,,forum,trade_{WOBS}_<
+1,3,marketplace,commercial,,caravansery,trade_{FLP}_<>
+1,4,tavern,commercial,,,$5
+1,5,tavern,commercial,,,$5
+1,6,marketplace,commercial,,caravansery,trade_{FLP}_<>
+1,7,tavern,commercial,,,$5
+1,7,east_trading_post,commercial,,forum,trade_{WOBS}_>
+1,7,west_trading_post,commercial,,forum,trade_{WOBS}_<
+1,3,loom,manufactured_good,,,L
+1,3,glassworks,manufactured_good,,,F
+1,3,press,manufactured_good,,,P
+1,6,loom,manufactured_good,,,L
+1,6,glassworks,manufactured_good,,,F
+1,6,press,manufactured_good,,,P
+1,3,stockade,military,W,,M1
+1,3,barracks,military,O,,M1
+1,3,guard_tower,military,B,,M1
+1,4,guard_tower,military,B,,M1
+1,5,barracks,military,O,,M1
+1,7,stockade,military,W,,M1
+1,3,lumber_yard,raw_material,,,W
+1,3,ore_vein,raw_material,,,O
+1,3,clay_pool,raw_material,,,B
+1,3,stone_pit,raw_material,,,S
+1,3,timber_yard,raw_material,$1,,S/W
+1,3,clay_pit,raw_material,$1,,B/O
+1,4,lumber_yard,raw_material,,,W
+1,4,ore_vein,raw_material,,,O
+1,4,excavation,raw_material,$1,,S/B
+1,5,clay_pool,raw_material,,,B
+1,5,stone_pit,raw_material,,,S
+1,5,forest_cave,raw_material,$1,,W/O
+1,6,tree_farm,raw_material,$1,,W/B
+1,6,mine,raw_material,$1,,S/O
+1,3,apothecary,scientific,L,stables;dispensary,C
+1,3,workshop,scientific,F,archery_range;laboratory,G
+1,3,scriptorium,scientific,P,courthouse;library,T
+1,4,scriptorium,scientific,P,courthouse;library,T
+1,5,apothecary,scientific,L,stables;dispensary,C
+1,7,workshop,scientific,F,archery_range;laboratory,G
+2,3,temple,civilian,WBF,,4
 2,3,courthouse,civilian,BBL,,4
 2,3,statue,civilian,OOW,gardens,4
 2,3,aqueduct,civilian,SSS,,5
-2,3,stables,military,BWO,,2
-2,3,archery range,military,WWO,,2
-2,3,walls,military,SSS,fortifications,2
-2,3,library,scientific,SSL,senate | university,T
-2,3,laboratory,scientific,BBP,siege workshop | observatory,G
-2,3,dispensary,scientific,OOG,arena | lodge,C
-2,3,school,scientific,WP,academy | study,T
-2,4,sawmill,raw_material,$,,WW
-2,4,foundry,raw_material,$,,OO
-2,4,brickyard,raw_material,$,,BB
-2,4,quarry,raw_material,$,,SS
-2,4,bazaar,commercial,,,$${manufactured_good} <v>
-2,4,dispensary,scientific,OOG,arena | lodge,C
-2,4,training ground,military,OOW,circus,2
-2,5,loom,manufactured_good,,,L
-2,5,glassworks,manufactured_good,,,G
-2,5,press,manufactured_good,,,P
-2,5,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
 2,5,courthouse,civilian,BBL,,4
-2,5,laboratory,scientific,BBP,siege workshop | observatory,G
-2,5,stables,military,BWO,,2
-2,6,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
-2,6,forum,commercial,BB,haven,+resource{G/L/P}
-2,6,vineyard,commercial,,,${raw_material} <v>
-2,6,temple,civilian,WBG,pantheon,3
-2,6,library,scientific,SSL,senate | university,T
-2,6,archery range,military,WWO,,2
-2,6,training ground,military,OOW,circus,2
-2,7,forum,commercial,BB,haven,+resource{G/L/P}
-2,7,bazaar,commercial,,,$${manufactured_good} <v>
+2,6,temple,civilian,WBF,,4
 2,7,statue,civilian,OOW,gardens,4
 2,7,aqueduct,civilian,SSS,,5
-2,7,school,scientific,WP,academy | study,T
-2,7,walls,military,SSS,fortifications,2
-2,7,training ground,military,OOW,circus,2
+2,3,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
+2,3,forum,commercial,BB,haven,+resource{F/L/P}
+2,3,vineyard,commercial,,,$1-{raw_material}_<v>
+2,4,bazaar,commercial,,,$2-{manufactured_good}_<v>
+2,5,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
+2,6,caravansery,commercial,WW,lighthouse,+resource{W/S/O/B}
+2,6,forum,commercial,BB,haven,+resource{F/L/P}
+2,6,vineyard,commercial,,,$1-{raw_material}_<v>
+2,7,forum,commercial,BB,haven,+resource{F/L/P}
+2,7,bazaar,commercial,,,$2-{manufactured_good}_<v>
+2,3,loom,manufactured_good,,,L
+2,3,glassworks,manufactured_good,,,F
+2,3,press,manufactured_good,,,P
+2,5,loom,manufactured_good,,,L
+2,5,glassworks,manufactured_good,,,F
+2,5,press,manufactured_good,,,P
+2,3,stables,military,BWO,,M2
+2,3,archery_range,military,WWO,,M2
+2,3,walls,military,SSS,fortifications,M2
+2,4,training_ground,military,OOW,circus,M2
+2,5,stables,military,BWO,,M2
+2,6,archery_range,military,WWO,,M2
+2,6,training_ground,military,OOW,circus,M2
+2,7,walls,military,SSS,fortifications,M2
+2,7,training_ground,military,OOW,circus,M2
+2,3,sawmill,raw_material,$1,,WW
+2,3,foundry,raw_material,$1,,OO
+2,3,brickyard,raw_material,$1,,BB
+2,3,quarry,raw_material,$1,,SS
+2,4,sawmill,raw_material,$1,,WW
+2,4,foundry,raw_material,$1,,OO
+2,4,brickyard,raw_material,$1,,BB
+2,4,quarry,raw_material,$1,,SS
+2,3,library,scientific,SSL,senate;university,T
+2,3,laboratory,scientific,BBP,siege_workshop;observatory,G
+2,3,dispensary,scientific,OOF,arena;lodge,C
+2,3,school,scientific,WP,academy;study,T
+2,4,dispensary,scientific,OOF,arena;lodge,C
+2,5,laboratory,scientific,BBP,siege_workshop;observatory,G
+2,6,library,scientific,SSL,senate;university,T
+2,7,school,scientific,WP,academy;study,T
 3,3,gardens,civilian,BBW,,5
 3,3,senate,civilian,WWSO,,6
-3,3,town hall,civilian,SSOG,,6
-3,3,pantheon,civilian,BBOGPL,,7
-3,3,palace,civilian,SOWBGPL,,8
-3,3,university,scientific,WWPG,,T
-3,3,observatory,scientific,OOGL,,G
+3,3,town_hall,civilian,SSOF,,6
+3,3,pantheon,civilian,BBOFPL,,7
+3,3,palace,civilian,SOWBFPL,,8
+3,4,gardens,civilian,BBW,,5
+3,5,senate,civilian,WWSO,,6
+3,6,town_hall,civilian,SSOF,,6
+3,6,pantheon,civilian,BBOFPL,,7
+3,7,palace,civilian,SOWBFPL,,8
+3,3,arena,commercial,SSO,,$3-V1-{wonder}
+3,3,lighthouse,commercial,SF,,$1-V1-{commercial}
+3,3,haven,commercial,WOL,,$1-V1-{raw_material}
+3,4,haven,commercial,WOL,,$1-V1-{raw_material}
+3,4,chamber_of_commerce,commercial,BBP,,$2-V2-{manufactured_good}
+3,5,arena,commercial,SSO,,$3-V1-{wonder}
+3,5,ludus,commercial,SO,,$3-V1-{military}
+3,6,lighthouse,commercial,SF,,$1-V1-{commercial}
+3,6,chamber_of_commerce,commercial,BBP,,$2-V2-{manufactured_good}
+3,7,ludus,commercial,SO,,$3-V1-{military}
+3,1,workers_guild,guild,OOBSW,,V1-{raw_material}_<>
+3,1,craftsmens_guild,guild,OOSS,,V2-{manufactured_good}_<>
+3,1,shipowners_guild,guild,WWWFP,,V1-{raw_material;manufactured_good;guild}
+3,1,traders_guild,guild,FLP,,V1-{commercial}_<>
+3,1,magistrates_guild,guild,WWWSL,,V1-{civilian}_<>
+3,1,builders_guild,guild,SSSBBF,,V1-{wonder}_<v>
+3,1,philosophers_guild,guild,BBBPL,,V1-{scientific}_<>
+3,1,scientist_guild,guild,WWOOP,,+science{C/T/G}
+3,1,spies_guild,guild,BBF,,V1-{military}_<>
+3,1,decorators_guild,guild,OOSL,,V1-{wonders_complete}
+3,3,siege_workshop,military,BBBW,,3
+3,3,fortification,military,OOOB,,3
+3,3,arsenal,military,OOWL,,3
+3,4,castrum,military,BBWP,,3
+3,4,circus,military,SSSO,,3
+3,5,arsenal,military,OOWL,,3
+3,5,siege_workshop,military,BBBW,,3
+3,6,circus,military,SSSO,,3
+3,7,fortification,military,OOOB,,3
+3,7,castrum,military,BBWP,,3
+3,3,university,scientific,WWPF,,T
+3,3,observatory,scientific,OOFL,,G
 3,3,lodge,scientific,BBPL,,C
 3,3,study,scientific,WPL,,G
-3,3,academy,scientific,SSSG,,C
-3,3,siege workshop,military,BBBW,,3
-3,3,fortification,military,OOOS,,3
-3,3,arsenal,military,OOWL,,3
-3,3,arena,commercial,SSO,,$$$V{commercial}
-3,3,lighthouse,commercial,SG,,$V{wonder}
-3,3,haven,commercial,WOL,,$V{raw_material}
-3,1,workers guild,guild,OOBSW,,V{raw_material} <>
-3,1,craftsmens guild,guild,OOSS,,VV{manufactured_good} <>
-3,1,shipowners guild,guild,WWWGP,,V{raw_material | manufactured_good | guild}
-3,1,traders guild,guild,GLP,,V{commercial} <>
-3,1,magistrates guild,guild,WWWSL,,V{civilian} <>
-3,1,builders guild,guild,SSBBG,,V{wonder} <v>
-3,1,philosophers guild,guild,BBBPL,,V{scientific} <>
-3,1,scientist guild,guild,WWOOP,,+science{C / T / G}
-3,1,spies guild,guild,BBBG,,V{military} <>
-3,1,strategists guild,guild,WWSL,,V{war lose} <>
-3,1,architects guild,guild,OOOBPL,,V{guild} <>
-3,4,gardens,civilian,BBW,,5
-3,4,university,scientific,WWPG,,T
-3,4,arsenal,military,OOWL,,3
-3,4,circus,military,SSSO,,3
-3,4,haven,commercial,WOL,,$V{raw_material}
-3,4,chamber of commerce,commercial,BBP,,$$VV{manufactured_good}
-3,5,senate,civilian,WWSO,,6
-3,5,town hall,civilian,SSOG,,6
+3,3,academy,scientific,SSSF,,C
+3,4,university,scientific,WWPF,,T
 3,5,study,scientific,WPL,,G
-3,5,siege workshop,military,BBBW,,3
-3,5,circus,military,SSSO,,3
-3,5,arena,commercial,SSO,,$$$V{commercial}
-3,6,town hall,civilian,SSOG,,6
-3,6,pantheon,civilian,BBOGPL,,7
 3,6,lodge,scientific,BBPL,,C
-3,6,circus,military,SSSO,,3
-3,6,lighthouse,commercial,SG,,$V{wonder}
-3,6,chamber of commerce,commercial,BBP,,$$VV{manufactured_good}
-3,7,palace,civilian,SOWBGPL,,8
-3,7,observatory,scientific,OOGL,,G
-3,7,academy,scientific,SSSG,,C
-3,7,fortification,military,OOOS,,3
-3,7,arsenal,military,OOWL,,3
-3,7,arena,commercial,SSO,,$$$V{commercial}
+3,7,observatory,scientific,OOFL,,G
+3,7,academy,scientific,SSSF,,C
