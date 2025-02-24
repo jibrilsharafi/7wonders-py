@@ -107,6 +107,8 @@ def calculate_commercial_score(player: Player) -> int:
 
     for card in commercial_cards:
         multiplier_score = card.effect.count("V")
+        if multiplier_score == 0:
+            continue
 
         brackets_content = card.effect.split("{")[1].split("}")[0]
 
