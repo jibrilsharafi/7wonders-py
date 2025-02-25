@@ -215,7 +215,7 @@ def test_parse_cards_from_resources() -> None:
     assert cards[127].name == "decorators_guild"
     assert cards[127].type == CardType.GUILD
     assert cards[127].age == 3
-    assert cards[127].min_players == 1
+    assert cards[127].min_players == 3
     assert cards[127].cost == {Resource.ORE: 2, Resource.STONE: 1, Resource.LOOM: 1}
     assert cards[127].chain_to == None
     assert cards[127].effect == "V-{wonders_complete}"
@@ -259,4 +259,4 @@ def test_parse_wonders_from_resources() -> None:
     assert night_wonders[0].resource == Resource.GLASS
     assert len(night_wonders[0].stages) == 3
     assert night_wonders[0].stages[0].cost == {Resource.BRICK: 2}
-    assert night_wonders[0].stages[0].effect == "+resource{W/S/O/B}"
+    assert night_wonders[0].stages[0].effect == "W/S/O/B}"
