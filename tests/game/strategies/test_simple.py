@@ -5,7 +5,7 @@ import pytest
 from src.core.enums import Action, CardType, Resource
 from src.core.types import Card, Wonder, WonderStage
 from src.game.player import Player
-from src.game.state import GameState
+from src.game.game_state import GameState
 from src.game.strategies.simple.simple import SimpleStrategy
 
 logger = logging.getLogger(__name__)

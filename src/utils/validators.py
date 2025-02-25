@@ -3,9 +3,13 @@ from ..core.types import Card, CardType
 import random
 
 
-def is_card_present(cards: List[Card], card_name: str) -> bool:
+def is_card_present(cards: List[Card], card_to_check: Card) -> bool:
     """Check if a card is present in a list of cards"""
-    return any(card.name == card_name for card in cards)
+    return any(card_to_check.name == card.name for card in cards)
+
+
+def can_card_be_chained(cards: List[Card], new_card: Card) -> bool:
+    return bool(any(c.chain_to == new_card.name for c in cards))
 
 
 def drop_duplicates_cards(cards: List[Card]) -> List[Card]:
@@ -28,8 +32,8 @@ def get_random_cards(
         cards = [card for card in cards if card.min_players in filter_min_players]
     if filter_type:
         cards = [card for card in cards if card.type in filter_type]
-        
+
     if unique:
         cards = drop_duplicates_cards(cards)
-        
+
     return random.sample(cards, n)

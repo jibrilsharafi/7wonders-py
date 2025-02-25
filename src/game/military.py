@@ -1,7 +1,6 @@
 from typing import List, Dict
 from src.core.constants import AGE_MILITARY_TOKENS, MILITARY_DEFEAT_TOKEN
-from src.game.player import Player
-from src.utils.generic import get_neighbors
+from src.game.player import Player, get_neighbors
 import logging
 
 logger = logging.getLogger(__name__)

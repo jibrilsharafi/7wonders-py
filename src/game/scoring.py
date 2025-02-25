@@ -3,7 +3,7 @@ from typing import Counter
 from src.core.enums import CARD_TYPE_MAP, CardType, ScienceSymbol
 from src.core.types import Score
 
-from .player import Player
+from src.game.player import Player
 
 
 def calculate_military_score(player: Player) -> int:

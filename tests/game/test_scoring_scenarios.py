@@ -5,7 +5,8 @@ import pytest
 
 from src.core.enums import CardType
 from src.core.types import Card, Resource, Wonder
-from src.game.player import Player
+from src.game.player import Player, get_left_neighbor, get_right_neighbor
+from src.game.strategies.simple.simple import SimpleStrategy
 from src.game.scoring import (
     calculate_commercial_score,
     calculate_guild_score,
@@ -19,7 +20,6 @@ from src.utils.validators import (
     get_random_cards,
     is_card_present,
 )
-from src.utils.generic import get_left_neighbor, get_right_neighbor
 
 
 @pytest.fixture
@@ -38,14 +38,14 @@ def wonders() -> List[Wonder]:
 def babylon_player(wonders: List[Wonder]) -> Player:
     """Player with Babylon wonder (has science symbol in second stage)"""
     babylon = next(w for w in wonders if w.name == "babylon")
-    return Player("babylon_player", babylon)
+    return Player("babylon_player", 1, babylon, SimpleStrategy())
 
 
 @pytest.fixture
 def alexandria_player(wonders: List[Wonder]) -> Player:
     """Player with Alexandria wonder (has resource choice effects)"""
     alexandria = next(w for w in wonders if w.name == "alexandria")
-    return Player("alexandria_player", alexandria)
+    return Player("alexandria_player", 2, alexandria, SimpleStrategy())
 
 
 def test_science_score_with_babylon(babylon_player: Player, cards: List[Card]) -> None:
@@ -102,9 +102,15 @@ def test_commercial_score_with_real_cards(
 
 def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) -> None:
     """Test guild scoring with multiple players and different guild types"""
-    p1 = Player("p1", next(w for w in wonders if w.name == "alexandria"))
-    p2 = Player("p2", next(w for w in wonders if w.name == "babylon"))
-    p3 = Player("p3", next(w for w in wonders if w.name == "rhodes"))
+    p1 = Player(
+        "p1", 1, next(w for w in wonders if w.name == "alexandria"), SimpleStrategy()
+    )
+    p2 = Player(
+        "p2", 2, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
+    )
+    p3 = Player(
+        "p3", 3, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
+    )
 
     # Add cards to neighbors
     for card in cards:
@@ -145,24 +151,24 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
     assert (
         calculate_guild_score(
             p1,
-            get_left_neighbor([p1, p2, p3], p1),
-            get_right_neighbor([p1, p2, p3], p1),
+            get_left_neighbor(p1.position, [p1, p2, p3]),
+            get_right_neighbor(p1.position, [p1, p2, p3]),
         )
         == 17
     )
     assert (
         calculate_guild_score(
             p2,
-            get_left_neighbor([p1, p2, p3], p2),
-            get_right_neighbor([p1, p2, p3], p2),
+            get_left_neighbor(p2.position, [p1, p2, p3]),
+            get_right_neighbor(p2.position, [p1, p2, p3]),
         )
         == 0
     )
     assert (
         calculate_guild_score(
             p3,
-            get_left_neighbor([p1, p2, p3], p3),
-            get_right_neighbor([p1, p2, p3], p3),
+            get_left_neighbor(p3.position, [p1, p2, p3]),
+            get_right_neighbor(p3.position, [p1, p2, p3]),
         )
         == 3
     )
@@ -170,7 +176,7 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
 
 def test_military_conflict_complete_game(cards: List[Card]) -> None:
     """Test military scoring through all ages"""
-    player = Player("test", Wonder("test", Resource.WOOD, []))
+    player = Player("test", 1, Wonder("test", Resource.WOOD, []), SimpleStrategy())
 
     # Add military cards
     military_cards = [
@@ -192,9 +198,15 @@ def test_complete_game_scoring_scenario(
     cards: List[Card], wonders: List[Wonder]
 ) -> None:
     """Test a complete game scoring scenario with multiple players"""
-    science_player = Player("science", next(w for w in wonders if w.name == "babylon"))
-    military_player = Player("military", next(w for w in wonders if w.name == "rhodes"))
-    civilian_player = Player("civilian", next(w for w in wonders if w.name == "giza"))
+    science_player = Player(
+        "science", 1, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
+    )
+    military_player = Player(
+        "military", 2, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
+    )
+    civilian_player = Player(
+        "civilian", 3, next(w for w in wonders if w.name == "giza"), SimpleStrategy()
+    )
 
     # Set up science player
     list_science_cards = get_random_cards(
@@ -231,18 +243,18 @@ def test_complete_game_scoring_scenario(
 
     # Get final scores
     science_score = calculate_total_score(
-        get_left_neighbor(all_players, science_player),
-        get_right_neighbor(all_players, science_player),
+        get_left_neighbor(science_player.position, all_players),
+        get_right_neighbor(science_player.position, all_players),
         science_player,
     )
     military_score = calculate_total_score(
-        get_left_neighbor(all_players, military_player),
-        get_right_neighbor(all_players, military_player),
+        get_left_neighbor(military_player.position, all_players),
+        get_right_neighbor(military_player.position, all_players),
         military_player,
     )
     civilian_score = calculate_total_score(
-        get_left_neighbor(all_players, civilian_player),
-        get_right_neighbor(all_players, civilian_player),
+        get_left_neighbor(civilian_player.position, all_players),
+        get_right_neighbor(civilian_player.position, all_players),
         civilian_player,
     )
     logging.info(f"Science player: {science_score}")

@@ -1,6 +1,6 @@
 name,resource,day_stages,night_stages
 alexandria,F,SS;VVV|OO;W/S/O/B|PL;VVVVVVV,BB;W/S/O/B|OOO;F/L/P|WWWW;VVVVVVV
-babylon,W,BB;VVV|OOL;+science{C/T/G}|WWWW;VVVVVVV,SS;play_both_last|BBBF;W/S/O/B
+babylon,W,BB;VVV|OOL;C/T/G|WWWW;VVVVVVV,SS;play_both_last|BBBF;W/S/O/B
 ephesus,P,BB;VVV|WW;$$$$$$$$$|OOF;VVVVVVV,SS;$$$$-VV|WW;$$$$-VVV|OOL;$$$$-VVVVV
 giza,S,WW;VVV|BBL;VVVVV|SSSS;VVVVVVV,WW;VVV|SSS;VVVVV|BBB;VVVVV|SSSSP;VVVVVVV
 halicarnassus,L,OO;VVV|FP;build_discard|SSS;VVVVVVV,BB;VV-build_discard|FP;V-build_discard|WWW;build_discard

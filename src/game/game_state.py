@@ -1,15 +1,20 @@
 import logging
+from copy import deepcopy
 from typing import Dict, List
 
 from src.core.constants import CARDS_PER_PLAYER, DISCARD_CARD_VALUE
 from src.core.enums import Action
 from src.core.types import Card
-from src.game.effect_resolver import apply_card_effects, apply_wonder_effects
 from src.game.military import apply_military_tokens, resolve_military_conflicts
-from src.game.player import Player
 from src.game.move import Move
-from src.game.trade_manager import pay_costs
-from src.utils.generic import get_left_neighbor, get_right_neighbor, is_valid_move
+from src.game.player import (
+    GameView,
+    Player,
+    PlayerView,
+    get_left_neighbor,
+    get_right_neighbor,
+    is_valid_move,
+)
 from src.utils.validators import get_random_cards
 
 logger = logging.getLogger(__name__)
@@ -24,6 +29,12 @@ class GameState:
         self.hands: Dict[Player, List[Card]] = {}
 
         logger.info(f"Game state created with {len(players)} players")
+
+    def get_player_by_name(self, name: str) -> Player:
+        for player in self.all_players:
+            if player.name == name:
+                return player
+        raise ValueError(f"Player '{name}' not found")
 
     def deal_age(self, cards: List[Card]) -> None:
         """Deal 7 cards to each player at the start of an age"""
@@ -90,39 +101,66 @@ class GameState:
 
     def make_turn(self, current_player: Player) -> None:
         strategy = current_player.strategy
-        move = strategy.choose_move(current_player, self)
+        game_view = GameView(
+            self.age,
+            self.turn,
+            [player.get_player_view() for player in self.all_players],
+            self.discarded_cards,
+        )
+        move = strategy.choose_move(current_player, game_view)
 
-        left_neighbor = get_left_neighbor(self.all_players, current_player)
-        right_neighbor = get_right_neighbor(self.all_players, current_player)
+        left_neighbor = current_player.get_left_neighbor(self.get_all_player_views())
+        right_neighbor = current_player.get_right_neighbor(self.get_all_player_views())
 
-        if is_valid_move(current_player, move, left_neighbor, right_neighbor):
+        if is_valid_move(current_player.get_player_view(), move, left_neighbor, right_neighbor):
             self.make_move(move)
         else:
             raise ValueError("Invalid move suggested")
 
     def make_move(self, move: Move) -> None:
         # Here we apply the move to the game state without checking if it's valid
-        
-        player = move.player
+
+        player = self.get_player_by_name(move.player_name)
         card = move.card
 
-        left_neighbor = get_left_neighbor(self.all_players, player)
-        right_neighbor = get_right_neighbor(self.all_players, player)
+        left_neighbor = get_left_neighbor(player.position, self.all_players)
+        right_neighbor = get_right_neighbor(player.position, self.all_players)
 
         if move.action == Action.PLAY:
             if not player.can_chain(card):
-                pay_costs(player, card.cost, left_neighbor, right_neighbor)
+                neighbour_coins = player.pay_costs(
+                    card.cost, left_neighbor.get_player_view(), right_neighbor.get_player_view()
+                )
+                left_neighbor.add_coins(neighbour_coins[0])
+                right_neighbor.add_coins(neighbour_coins[1])
+                
             player.add_card(card)
             player.remove_from_hand(card)
-            apply_card_effects(player, card, left_neighbor, right_neighbor)
+            player.apply_card_effects(card, left_neighbor.get_player_view(), right_neighbor.get_player_view())
 
         elif move.action == Action.WONDER:
             stage = player.get_current_wonder_stage_to_be_built()
-            pay_costs(player, stage.cost, left_neighbor, right_neighbor)
+            neighbour_coins = player.pay_costs(
+                stage.cost, left_neighbor.get_player_view(), right_neighbor.get_player_view()
+            )
+            left_neighbor.add_coins(neighbour_coins[0])
+            right_neighbor.add_coins(neighbour_coins[1])
+            
             player.add_stage()
-            apply_wonder_effects(player, stage.effect)
+            player.apply_wonder_effects(stage.effect)
 
         elif move.action == Action.DISCARD:
             player.add_coins(DISCARD_CARD_VALUE)
 
         self.hands[player].remove(card)
+
+    def get_game_view(self) -> GameView:
+        return GameView(
+            deepcopy(self.age),
+            deepcopy(self.turn),
+            deepcopy(self.get_all_player_views()),
+            deepcopy(self.discarded_cards),
+        )
+
+    def get_all_player_views(self) -> List[PlayerView]:
+        return deepcopy([player.get_player_view() for player in self.all_players])
