@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from typing import List, Optional, Dict
-from .enums import Resource, CardType, ScienceSymbol
+from typing import Dict, List, Optional
 
-# The effect will hold a string that will be parsed by the game engine
-# This allows flexibility and compactness in the card data
+from src.core.enums import CardType, Resource
 
 
 @dataclass

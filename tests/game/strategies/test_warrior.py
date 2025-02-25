@@ -1,11 +1,14 @@
+import logging
+
 import pytest
-from src.game.strategies.warrior.warrior import WarriorStrategy
+
+from src.core.enums import Action, CardType, Resource
+from src.core.types import Card, Wonder, WonderStage
 from src.game.player import Player
-from src.game.player_view import PlayerView
-from src.game.moves import Move
-from src.core.types import Wonder, Card, WonderStage
-from src.core.enums import Resource, Action, CardType
 from src.game.state import GameState
+from src.game.strategies.warrior.warrior import WarriorStrategy
+
+logger = logging.getLogger(__name__)
 
 
 @pytest.fixture
@@ -17,14 +20,15 @@ def strategy() -> WarriorStrategy:
 def wonder() -> Wonder:
     stages = [
         WonderStage({Resource.WOOD: 1}, "M"),  # Military stage
-        WonderStage({Resource.STONE: 2}, "VV"),
+        WonderStage({Resource.WOOD: 1}, "MMM"),
+        WonderStage({Resource.WOOD: 10}, "VV"),
     ]
     return Wonder("Test Wonder", Resource.WOOD, stages)
 
 
 @pytest.fixture
 def player(wonder: Wonder) -> Player:
-    return Player("Test Player", wonder)
+    return Player("Test Player", wonder, WarriorStrategy())
 
 
 @pytest.fixture
@@ -37,55 +41,55 @@ def sample_cards() -> list[Card]:
 
 
 @pytest.fixture
-def view(player: Player) -> PlayerView:
-    return PlayerView(player, GameState([player]))
+def sample_costly_card() -> Card:
+    return Card(
+        "Costly Card", CardType.RAW_MATERIAL, 1, 3, {Resource.WOOD: 10}, None, "SSS"
+    )
+
+
+@pytest.fixture
+def game_state(player: Player) -> GameState:
+    return GameState([player])
 
 
 def test_prioritizes_most_shields(
     strategy: WarriorStrategy,
-    view: PlayerView,
     player: Player,
+    game_state: GameState,
     sample_cards: list[Card],
 ) -> None:
     """Should choose the move that provides the most shields"""
-    moves = [
-        Move(player, Action.PLAY, sample_cards[0]),  # 2 shields
-        Move(player, Action.PLAY, sample_cards[1]),  # 1 shield
-        Move(player, Action.PLAY, sample_cards[2]),  # 0 shields
-    ]
+    player.add_to_hand(sample_cards)
 
-    chosen = strategy.choose_move(view)
+    chosen = strategy.choose_move(player, game_state)
+    assert chosen.action == Action.PLAY
     assert chosen.card.effect.count("M") == 2  # Should pick card with 2 shields
 
 
 def test_wonder_stage_with_shields(
     strategy: WarriorStrategy,
-    view: PlayerView,
+    game_state: GameState,
     player: Player,
     sample_cards: list[Card],
 ) -> None:
     """Should consider wonder stages that provide shields"""
-    moves = [
-        Move(player, Action.WONDER, sample_cards[0]),  # Wonder stage with 1 shield
-        Move(player, Action.PLAY, sample_cards[1]),  # Card with 1 shield
-        Move(player, Action.PLAY, sample_cards[2]),  # Card with no shields
-    ]
+    player.add_to_hand(sample_cards)
+    player.add_stage()  # Go to stage two which provides more shields
 
-    chosen = strategy.choose_move(view)
+    chosen = strategy.choose_move(player, game_state)
     assert chosen.action == Action.WONDER  # Should choose wonder stage
 
 
 def test_fallback_when_no_military(
     strategy: WarriorStrategy,
-    view: PlayerView,
     player: Player,
-    sample_cards: list[Card],
+    game_state: GameState,
+    sample_costly_card: Card,
 ) -> None:
     """Should default to first move when no military options available"""
-    moves = [
-        Move(player, Action.PLAY, sample_cards[2]),  # No shields
-        Move(player, Action.DISCARD, sample_cards[2]),  # No shields
-    ]
+    player.add_to_hand([sample_costly_card])
+    player.add_stage()
+    player.add_stage()  # Go to the last unaffordable stage
 
-    chosen = strategy.choose_move(view)
-    assert chosen == moves[0]  # Should pick first available move
+    chosen = strategy.choose_move(player, game_state)
+    assert chosen.action == Action.DISCARD  # Should discard the card

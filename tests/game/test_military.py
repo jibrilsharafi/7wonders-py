@@ -1,15 +1,17 @@
+import logging
+from typing import Dict, List
+
 import pytest
-from src.game.player import Player
+
+from src.core.enums import CardType, Resource
 from src.core.types import Card, Wonder
-from src.core.enums import Resource, CardType
 from src.game.military import (
+    apply_military_tokens,
     calculate_battle,
     calculate_military_outcome,
     resolve_military_conflicts,
-    apply_military_tokens,
 )
-import logging
-from typing import List, Dict
+from src.game.player import Player
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +38,30 @@ def test_calculate_battle() -> None:
     # Age 3 battles
     assert calculate_battle(3, 1, 3) == 5  # Win
     assert calculate_battle(1, 3, 3) == -1  # Loss
+
+
+def test_calculate_battle_invalid_age() -> None:
+    """Test battle calculations with invalid ages"""
+    with pytest.raises(KeyError):
+        calculate_battle(1, 0, 0)  # Age 0 doesn't exist
+    with pytest.raises(KeyError):
+        calculate_battle(1, 0, 4)  # Age 4 doesn't exist
+
+
+def test_calculate_military_outcome(three_players: List[Player]) -> None:
+    """Test calculating military outcomes for a player"""
+    p1, p2, p3 = three_players
+
+    # P1: 1 shield, P2: 2 shields, P3: 0 shields
+    p1.add_card(Card("Shield1", CardType.MILITARY, 1, 3, {}, None, "M"))
+    p2.add_card(Card("Shield2", CardType.MILITARY, 1, 3, {}, None, "MM"))
+
+    # P1 should win against P3 and lose against P2
+    assert calculate_military_outcome(p1, [p2, p3], 1) == 2
+    # P2 should win against P1 and P3
+    assert calculate_military_outcome(p2, [p1, p3], 1) == 6
+    # P3 should lose against P1 and P2
+    assert calculate_military_outcome(p3, [p1, p2], 1) == -2
 
 
 def test_military_conflicts_age1(three_players: List[Player]) -> None:
@@ -83,6 +109,57 @@ def test_military_conflicts_age3(three_players: List[Player]) -> None:
     assert outcomes[p1] == 5  # Win vs P2 (+5), tie vs P3 (0)
     assert outcomes[p2] == -2  # Two losses (-1 each)
     assert outcomes[p3] == 5  # Win vs P2 (+5), tie vs P1 (0)
+
+
+def test_military_conflicts_two_players() -> None:
+    """Test military conflicts with only two players"""
+    p1 = Player("P1", Wonder("W1", Resource.WOOD, []))
+    p2 = Player("P2", Wonder("W2", Resource.BRICK, []))
+    players = [p1, p2]
+
+    # Both players have 1 shield
+    p1.add_card(Card("Shield1", CardType.MILITARY, 1, 3, {}, None, "M"))
+    p2.add_card(Card("Shield1", CardType.MILITARY, 1, 3, {}, None, "M"))
+
+    outcomes = resolve_military_conflicts(players, 1)
+    assert outcomes[p1] == 0  # Tie
+    assert outcomes[p2] == 0  # Tie
+
+
+def test_accumulating_military_tokens() -> None:
+    """Test accumulating military tokens across multiple ages"""
+    p1 = Player("P1", Wonder("W1", Resource.WOOD, []))
+    p2 = Player("P2", Wonder("W2", Resource.BRICK, []))
+    players = [p1, p2]
+
+    # Age 1: P1 wins
+    p1.add_card(Card("Shield1", CardType.MILITARY, 1, 3, {}, None, "M"))
+    outcomes = resolve_military_conflicts(players, 1)
+    apply_military_tokens(players, outcomes)
+    assert p1.military_tokens == 1
+    assert p2.military_tokens == -1
+
+    # Age 2: P2 wins
+    p2.add_card(Card("Shield2", CardType.MILITARY, 1, 3, {}, None, "MM"))
+    outcomes = resolve_military_conflicts(players, 2)
+    apply_military_tokens(players, outcomes)
+    assert p1.military_tokens == 0  # 1 + (-1)
+    assert p2.military_tokens == 2  # -1 + 3
+
+
+def test_max_shields() -> None:
+    """Test military conflicts with maximum possible shields"""
+    p1 = Player("P1", Wonder("W1", Resource.WOOD, []))
+    p2 = Player("P2", Wonder("W2", Resource.BRICK, []))
+    players = [p1, p2]
+
+    # Add maximum reasonable number of shields to P1
+    for _ in range(10):  # No game should have more than 10 military cards
+        p1.add_card(Card("Shield", CardType.MILITARY, 1, 3, {}, None, "MMM"))
+
+    outcomes = resolve_military_conflicts(players, 3)
+    assert outcomes[p1] == 5  # Should still only get normal victory points
+    assert outcomes[p2] == -1  # Normal defeat token
 
 
 def test_apply_military_tokens(three_players: List[Player]) -> None:

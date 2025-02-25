@@ -1,18 +1,17 @@
-from src.core.types import Card, Wonder, Score
-from typing import Dict, List
-from src.core.enums import Resource, CardType, Action, RESOURCE_MAP
-from src.game.moves import Move
-from src.core.constants import DISCARD_CARD_VALUE
-from src.game.strategy import PlayerStrategy
-from src.game.strategies.simple.simple import SimpleStrategy
 import logging
+from typing import Dict, List
+
+from src.core.enums import RESOURCE_MAP, CardType, Resource
+from src.core.types import Card, Score, Wonder, WonderStage
+from src.game.strategy import PlayerStrategy
+from src.utils.generic import can_card_be_added, can_card_be_chained
 
 logger = logging.getLogger(__name__)
 
 
 class Player:
     def __init__(
-        self, name: str, wonder: Wonder, strategy: PlayerStrategy = SimpleStrategy()
+        self, name: str, wonder: Wonder, strategy: PlayerStrategy
     ):
         self.name: str = name
         self.wonder: Wonder = wonder
@@ -53,26 +52,38 @@ class Player:
     def add_to_hand(self, cards: List[Card]) -> None:
         self.hand.extend(cards)
 
+    def remove_from_hand(self, card: Card) -> None:
+        self.hand.remove(card)
+
     def discard_hand(self) -> None:
         self.hand = []
 
-    def apply_move(self, move: Move) -> None:
-        self.hand.remove(move.card)
-        if move.action == Action.PLAY:
-            self.add_card(move.card)
-        elif move.action == Action.WONDER:
-            self.add_stage()
-        elif move.action == Action.DISCARD:
-            self.add_coins(DISCARD_CARD_VALUE)
-
     def get_shields(self) -> int:
         return sum(card.effect.count("M") for card in self.cards)
+
+    def get_current_wonder_stage_to_be_built(self) -> WonderStage:
+        return self.wonder.stages[self.stages_built]
+
+    def get_built_wonder_stages(self) -> List[WonderStage]:
+        return self.wonder.stages[: self.stages_built]
+
+    def get_military_score(self) -> int:
+        return self.military_tokens
 
     def count_cards_by_type(self, card_type: CardType) -> int:
         return sum(card.type == card_type for card in self.cards)
 
     def can_add_card(self, card: Card) -> bool:
-        return card.name not in [c.name for c in self.cards]
+        return can_card_be_added(self.cards, card)
+
+    def can_play_no_costs(self, card: Card) -> bool:
+        return bool(self.can_add_card(card))
+
+    def can_build_wonder_no_cost(self) -> bool:
+        return bool(self.stages_built < len(self.wonder.stages))
+
+    def can_chain(self, card: Card) -> bool:
+        return can_card_be_chained(self.cards, card)
 
     def get_resources(
         self, priority_resources: List[Resource] = []

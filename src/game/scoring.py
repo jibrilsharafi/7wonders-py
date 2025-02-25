@@ -1,6 +1,8 @@
-from typing import List, Counter
-from ..core.types import Score
-from ..core.enums import CardType, ScienceSymbol, CARD_TYPE_MAP
+from typing import Counter
+
+from src.core.enums import CARD_TYPE_MAP, CardType, ScienceSymbol
+from src.core.types import Score
+
 from .player import Player
 
 
@@ -74,7 +76,7 @@ def calculate_science_score(player: Player) -> int:
     # If no science cards are available, return already the square of jolly cards (max possible score)
     if not symbols:
         return jolly_cards * jolly_cards
-    
+
     max_score = calculate_score(symbols)
     science_symbols = list(ScienceSymbol)
 
@@ -119,15 +121,15 @@ def calculate_commercial_score(player: Player) -> int:
             score += multiplier_score * player.military_tokens
 
         elif brackets_content == "commercial":
-            score += multiplier_score * player.total_cards_of_type(CardType.COMMERCIAL)
+            score += multiplier_score * player.count_cards_by_type(CardType.COMMERCIAL)
 
         elif brackets_content == "raw_material":
-            score += multiplier_score * player.total_cards_of_type(
+            score += multiplier_score * player.count_cards_by_type(
                 CardType.RAW_MATERIAL
             )
 
         elif brackets_content == "manufactured_good":
-            score += multiplier_score * player.total_cards_of_type(
+            score += multiplier_score * player.count_cards_by_type(
                 CardType.MANUFACTURED_GOOD
             )
 
@@ -137,13 +139,12 @@ def calculate_commercial_score(player: Player) -> int:
     return score
 
 
-def calculate_guild_score(player: Player, all_players: List[Player]) -> int:
+def calculate_guild_score(
+    player: Player, left_neighbor: Player, right_neighbor: Player
+) -> int:
     """Calculate guild (purple card) score based on various conditions"""
     score = 0
     guild_cards = [card for card in player.cards if card.type == CardType.GUILD]
-
-    left_player = player.get_left_neighbor(all_players)
-    right_player = player.get_right_neighbor(all_players)
 
     for card in guild_cards:
         # Skip science
@@ -153,9 +154,9 @@ def calculate_guild_score(player: Player, all_players: List[Player]) -> int:
         brackets_content = card.effect.split("{")[1].split("}")[0]
 
         if ";" in brackets_content:
-            score += player.total_cards_of_type(CardType.RAW_MATERIAL)
-            score += player.total_cards_of_type(CardType.MANUFACTURED_GOOD)
-            score += player.total_cards_of_type(CardType.GUILD)
+            score += player.count_cards_by_type(CardType.RAW_MATERIAL)
+            score += player.count_cards_by_type(CardType.MANUFACTURED_GOOD)
+            score += player.count_cards_by_type(CardType.GUILD)
 
         elif brackets_content == "wonders_complete":
             if player.stages_built == len(player.wonder.stages):
@@ -163,20 +164,22 @@ def calculate_guild_score(player: Player, all_players: List[Player]) -> int:
 
         elif brackets_content == "wonder":
             score += player.stages_built
-            score += left_player.stages_built
-            score += right_player.stages_built
+            score += left_neighbor.stages_built
+            score += right_neighbor.stages_built
 
         else:
             card_type = CARD_TYPE_MAP[brackets_content]
 
-            score += player.total_cards_of_type(card_type)
-            score += left_player.total_cards_of_type(card_type)
-            score += right_player.total_cards_of_type(card_type)
+            score += player.count_cards_by_type(card_type)
+            score += left_neighbor.count_cards_by_type(card_type)
+            score += right_neighbor.count_cards_by_type(card_type)
 
     return score
 
 
-def calculate_total_score(player: Player, all_players: List[Player]) -> Score:
+def calculate_total_score(
+    player: Player, left_neighbor: Player, right_neighbor: Player
+) -> Score:
     """Calculate total score for a player"""
     return Score(
         military=calculate_military_score(player),
@@ -185,5 +188,5 @@ def calculate_total_score(player: Player, all_players: List[Player]) -> Score:
         civilian=calculate_civilian_score(player),
         scientific=calculate_science_score(player),
         commercial=calculate_commercial_score(player),
-        guilds=calculate_guild_score(player, all_players),
+        guilds=calculate_guild_score(player, left_neighbor, right_neighbor),
     )

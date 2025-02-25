@@ -1,17 +1,18 @@
 import pytest
+
+from src.core.enums import CardType, Resource
+from src.core.types import Card, Score, Wonder, WonderStage
+from src.game.player import Player
 from src.game.scoring import (
-    calculate_military_score,
-    calculate_treasury_score,
-    calculate_wonders_score,
     calculate_civilian_score,
-    calculate_science_score,
     calculate_commercial_score,
     calculate_guild_score,
+    calculate_military_score,
+    calculate_science_score,
     calculate_total_score,
+    calculate_treasury_score,
+    calculate_wonders_score,
 )
-from src.core.types import Card, Wonder, WonderStage, Score
-from src.core.enums import Resource, CardType
-from src.game.player import Player
 
 
 @pytest.fixture
@@ -189,7 +190,7 @@ def test_guild_score() -> None:
         )
     ]
 
-    assert calculate_guild_score(player1, [player1, player2, player3]) == 3
+    assert calculate_guild_score(player1, player2, player3) == 3
 
 
 def test_total_score(basic_player: Player) -> None:
@@ -209,8 +210,8 @@ def test_total_score(basic_player: Player) -> None:
         ),
     ]
 
-    score = calculate_total_score(basic_player, [basic_player])
-    
+    score = calculate_total_score(basic_player, basic_player, basic_player)
+
     assert isinstance(score, Score)
     assert score.military == 5
     assert score.treasury == 3
@@ -220,4 +221,3 @@ def test_total_score(basic_player: Player) -> None:
     assert score.commercial == 0
     assert score.guilds == 0
     assert score.total == 17
-

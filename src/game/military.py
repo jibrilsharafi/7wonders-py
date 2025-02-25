@@ -1,6 +1,7 @@
 from typing import List, Dict
 from src.core.constants import AGE_MILITARY_TOKENS, MILITARY_DEFEAT_TOKEN
 from src.game.player import Player
+from src.utils.generic import get_neighbors
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,15 +35,14 @@ def calculate_military_outcome(
     return total_tokens
 
 
-def resolve_military_conflicts(players: List[Player], age: int) -> Dict[Player, int]:
+def resolve_military_conflicts(
+    all_players: List[Player], age: int
+) -> Dict[Player, int]:
     """Calculate and return military outcomes for all players"""
     outcomes: Dict[Player, int] = {}
 
-    for player in players:
-        neighbors = [
-            player.get_left_neighbor(players),
-            player.get_right_neighbor(players),
-        ]
+    for player in all_players:
+        neighbors = get_neighbors(all_players, player)
         outcomes[player] = calculate_military_outcome(player, neighbors, age)
 
     return outcomes

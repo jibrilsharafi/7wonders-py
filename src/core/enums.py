@@ -41,7 +41,7 @@ CARD_TYPE_MAP = {
     "commercial": CardType.COMMERCIAL,
     "military": CardType.MILITARY,
     "scientific": CardType.SCIENTIFIC,
-    "guild": CardType.GUILD
+    "guild": CardType.GUILD,
 }
 
 

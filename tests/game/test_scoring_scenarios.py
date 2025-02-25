@@ -1,22 +1,26 @@
-import pytest
-from typing import List
 import logging
+from typing import List
+
+import pytest
+
+from src.core.enums import CardType
+from src.core.types import Card, Resource, Wonder
+from src.game.player import Player
 from src.game.scoring import (
-    calculate_military_score,
-    calculate_science_score,
     calculate_commercial_score,
     calculate_guild_score,
+    calculate_military_score,
+    calculate_science_score,
     calculate_total_score,
 )
 from src.utils.parsers import parse_cards, parse_wonders
 from src.utils.validators import (
     drop_duplicates_cards,
-    is_card_present,
     get_random_cards,
+    is_card_present,
 )
-from src.core.types import Card, Wonder, Resource
-from src.core.enums import CardType
-from src.game.player import Player
+from src.utils.generic import get_left_neighbor, get_right_neighbor
+
 
 @pytest.fixture
 def cards() -> List[Card]:
@@ -138,9 +142,30 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
     # Add last stage to p1
     p1.add_stage()
 
-    assert calculate_guild_score(p1, [p1, p2, p3]) == 17
-    assert calculate_guild_score(p2, [p1, p2, p3]) == 0
-    assert calculate_guild_score(p3, [p1, p2, p3]) == 3
+    assert (
+        calculate_guild_score(
+            p1,
+            get_left_neighbor([p1, p2, p3], p1),
+            get_right_neighbor([p1, p2, p3], p1),
+        )
+        == 17
+    )
+    assert (
+        calculate_guild_score(
+            p2,
+            get_left_neighbor([p1, p2, p3], p2),
+            get_right_neighbor([p1, p2, p3], p2),
+        )
+        == 0
+    )
+    assert (
+        calculate_guild_score(
+            p3,
+            get_left_neighbor([p1, p2, p3], p3),
+            get_right_neighbor([p1, p2, p3], p3),
+        )
+        == 3
+    )
 
 
 def test_military_conflict_complete_game(cards: List[Card]) -> None:
@@ -205,10 +230,21 @@ def test_complete_game_scoring_scenario(
     all_players = [science_player, military_player, civilian_player]
 
     # Get final scores
-    science_score = calculate_total_score(science_player, all_players)
-    military_score = calculate_total_score(military_player, all_players)
-    civilian_score = calculate_total_score(civilian_player, all_players)
-
+    science_score = calculate_total_score(
+        get_left_neighbor(all_players, science_player),
+        get_right_neighbor(all_players, science_player),
+        science_player,
+    )
+    military_score = calculate_total_score(
+        get_left_neighbor(all_players, military_player),
+        get_right_neighbor(all_players, military_player),
+        military_player,
+    )
+    civilian_score = calculate_total_score(
+        get_left_neighbor(all_players, civilian_player),
+        get_right_neighbor(all_players, civilian_player),
+        civilian_player,
+    )
     logging.info(f"Science player: {science_score}")
     logging.info(f"Military player: {military_score}")
     logging.info(f"Civilian player: {civilian_score}")
