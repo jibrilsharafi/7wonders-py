@@ -27,7 +27,7 @@ def calculate_military_outcome(
         tokens = calculate_battle(player_shields, neighbor_shields, age)
         if tokens != 0:
             logger.debug(
-                f"{player.name} {'wins' if tokens > 0 else 'loses'} against {neighbor.name}"
+                f"{player.name} {'wins' if tokens > 0 else 'loses'} against {neighbor.name} ({player_shields} vs {neighbor_shields})"
             )
         total_tokens += tokens
 
@@ -35,19 +35,19 @@ def calculate_military_outcome(
 
 
 def resolve_military_conflicts(
-    all_players: List[Player], age: int
+    all_players: List[Player], age: int # TODO: make all of these view
 ) -> Dict[Player, int]:
     """Calculate and return military outcomes for all players"""
     outcomes: Dict[Player, int] = {}
 
     for player in all_players:
-        neighbors = get_neighbors(all_players, player)
+        neighbors = get_neighbors(player.position, all_players)
         outcomes[player] = calculate_military_outcome(player, neighbors, age)
 
     return outcomes
 
 
-def apply_military_tokens(players: List[Player], outcomes: Dict[Player, int]) -> None:
+def apply_military_tokens_to_all(all_players: List[Player], outcomes: Dict[Player, int]) -> None:
     """Apply military tokens to players"""
-    for player in players:
+    for player in all_players:
         player.add_military_tokens(outcomes[player])

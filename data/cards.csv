@@ -124,9 +124,9 @@ age,min_players,name,type,cost,chain_to,effect
 3,3,magistrates_guild,guild,WWWSL,,V-{civilian}_<>
 3,3,builders_guild,guild,SSSBBF,,V-{wonder}_<v>
 3,3,philosophers_guild,guild,BBBPL,,V-{scientific}_<>
-3,3,scientist_guild,guild,WWOOP,,+science{C/T/G}
+3,3,scientist_guild,guild,WWOOP,,C/T/G
 3,3,spies_guild,guild,BBF,,V-{military}_<>
-3,3,decorators_guild,guild,OOSL,,V-{wonders_complete}
+3,3,decorators_guild,guild,OOSL,,VVVVVVV-{wonders_complete}
 3,3,siege_workshop,military,BBBW,,MMM
 3,3,fortification,military,OOOB,,MMM
 3,3,arsenal,military,OOWL,,MMM

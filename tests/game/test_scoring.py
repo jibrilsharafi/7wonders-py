@@ -3,6 +3,7 @@ import pytest
 from src.core.enums import CardType, Resource
 from src.core.types import Card, Score, Wonder, WonderStage
 from src.game.player import Player
+from src.game.strategies.simple.simple import SimpleStrategy
 from src.game.scoring import (
     calculate_civilian_score,
     calculate_commercial_score,
@@ -30,7 +31,7 @@ def basic_wonder() -> Wonder:
 
 @pytest.fixture
 def basic_player(basic_wonder: Wonder) -> Player:
-    return Player(name="test_player", wonder=basic_wonder)
+    return Player("test_player", 0, basic_wonder, SimpleStrategy())
 
 
 def test_military_score(basic_player: Player) -> None:
@@ -159,9 +160,9 @@ def test_guild_score() -> None:
         stages=[WonderStage(cost={}, effect="VVV")],
     )
 
-    player1 = Player(name="p1", wonder=wonder)
-    player2 = Player(name="p2", wonder=wonder)
-    player3 = Player(name="p3", wonder=wonder)
+    player1 = Player("p1", 0, wonder, SimpleStrategy())
+    player2 = Player("p2", 1, wonder, SimpleStrategy())
+    player3 = Player("p3", 2, wonder, SimpleStrategy())
 
     # Add some cards to neighbors
     civilian_card = Card(

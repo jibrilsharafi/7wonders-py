@@ -11,7 +11,7 @@ class Card:
     age: int
     min_players: int
     cost: Dict[Resource, int]
-    chain_to: Optional[List[str]]
+    chain_to: List[str]
     effect: str
 
 

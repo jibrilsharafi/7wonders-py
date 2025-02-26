@@ -72,7 +72,7 @@ def test_parse_cards() -> None:
     assert cards[0].age == 1
     assert cards[0].min_players == 3
     assert cards[0].cost == {}
-    assert cards[0].chain_to is None
+    assert cards[0].chain_to == []
     assert cards[0].effect == "W"
 
     # Test second card
@@ -81,7 +81,7 @@ def test_parse_cards() -> None:
     assert cards[1].age == 1
     assert cards[1].min_players == 4
     assert cards[1].cost == {}
-    assert cards[1].chain_to is None
+    assert cards[1].chain_to == []
     assert cards[1].effect == "S"
 
     # Test third card
@@ -90,7 +90,7 @@ def test_parse_cards() -> None:
     assert cards[2].age == 2
     assert cards[2].min_players == 3
     assert cards[2].cost == {}
-    assert cards[2].chain_to is None
+    assert cards[2].chain_to == []
     assert cards[2].effect == "F"
 
     # Test fourth card
@@ -99,7 +99,7 @@ def test_parse_cards() -> None:
     assert cards[3].age == 3
     assert cards[3].min_players == 3
     assert cards[3].cost == {Resource.WOOD: 2, Resource.LOOM: 2}
-    assert cards[3].chain_to is None
+    assert cards[3].chain_to == []
     assert cards[3].effect == "guild_effect"
 
 
@@ -217,8 +217,8 @@ def test_parse_cards_from_resources() -> None:
     assert cards[127].age == 3
     assert cards[127].min_players == 3
     assert cards[127].cost == {Resource.ORE: 2, Resource.STONE: 1, Resource.LOOM: 1}
-    assert cards[127].chain_to == None
-    assert cards[127].effect == "V-{wonders_complete}"
+    assert cards[127].chain_to == []
+    assert cards[127].effect == "VVVVVVV-{wonders_complete}"
 
 
 # now wonders csv
@@ -235,7 +235,7 @@ def test_parse_wonders_from_resources() -> None:
     assert wonders[1].resource == Resource.WOOD
     assert len(wonders[1].stages) == 3
     assert wonders[1].stages[1].cost == {Resource.ORE: 2, Resource.LOOM: 1}
-    assert wonders[1].stages[1].effect == "+science{C/T/G}"
+    assert wonders[1].stages[1].effect == "C/T/G"
 
     # Test 4th wonder
     assert wonders[4].name == "halicarnassus"
@@ -259,4 +259,4 @@ def test_parse_wonders_from_resources() -> None:
     assert night_wonders[0].resource == Resource.GLASS
     assert len(night_wonders[0].stages) == 3
     assert night_wonders[0].stages[0].cost == {Resource.BRICK: 2}
-    assert night_wonders[0].stages[0].effect == "W/S/O/B}"
+    assert night_wonders[0].stages[0].effect == "W/S/O/B"

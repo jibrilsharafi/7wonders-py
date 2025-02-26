@@ -39,7 +39,7 @@ def parse_cards(csv_content: str) -> List[Card]:
             chain_to=(
                 row[CardsCsvHeaders.CHAIN_TO.value].split(";")
                 if row[CardsCsvHeaders.CHAIN_TO.value]
-                else None
+                else []
             ),
             effect=row[CardsCsvHeaders.EFFECT.value],
         )

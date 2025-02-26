@@ -41,7 +41,7 @@ def calculate_civilian_score(player: Player) -> int:
 
 def calculate_science_score(player: Player) -> int:
     """Calculate scientific score using sets and individual symbols, optimizing jolly symbols"""
-    JOLLY_EFFECT_NAME = "+science{C/T/G}"
+    JOLLY_EFFECT_NAME = "C/T/G"
 
     science_cards = [card for card in player.cards if card.type == CardType.SCIENTIFIC]
     jolly_cards = 0
@@ -58,11 +58,11 @@ def calculate_science_score(player: Player) -> int:
 
     # Count jolly cards from wonder stages and cards
     for i in range(player.stages_built):
-        if JOLLY_EFFECT_NAME in player.wonder.stages[i].effect:
+        if player.wonder.stages[i].effect == JOLLY_EFFECT_NAME:
             jolly_cards += 1
 
     for card in player.cards:
-        if JOLLY_EFFECT_NAME in card.effect:
+        if card.effect == JOLLY_EFFECT_NAME:
             jolly_cards += 1
 
     def calculate_score(symbol_counts: Counter[ScienceSymbol]) -> int:
@@ -147,18 +147,13 @@ def calculate_guild_score(
     guild_cards = [card for card in player.cards if card.type == CardType.GUILD]
 
     for card in guild_cards:
-        # Skip science
-        if "science" in card.effect:
+        # If no brackets, skip since it is the scientific guild with no direct effect here
+        if "{" not in card.effect:
             continue
-
+        
         brackets_content = card.effect.split("{")[1].split("}")[0]
 
-        if ";" in brackets_content:
-            score += player.count_cards_by_type(CardType.RAW_MATERIAL)
-            score += player.count_cards_by_type(CardType.MANUFACTURED_GOOD)
-            score += player.count_cards_by_type(CardType.GUILD)
-
-        elif brackets_content == "wonders_complete":
+        if brackets_content == "wonders_complete":
             if player.stages_built == len(player.wonder.stages):
                 score += 7
 
@@ -168,11 +163,18 @@ def calculate_guild_score(
             score += right_neighbor.stages_built
 
         else:
-            card_type = CARD_TYPE_MAP[brackets_content]
+            for card_type_brackets in brackets_content.split(";"):
+                card_type = CARD_TYPE_MAP[card_type_brackets]
 
-            score += player.count_cards_by_type(card_type)
-            score += left_neighbor.count_cards_by_type(card_type)
-            score += right_neighbor.count_cards_by_type(card_type)
+                # Consider self
+                if "<v>" in card.effect or ("<" not in card.effect and ">" not in card.effect):
+                    score += player.count_cards_by_type(card_type)
+                
+                # Consider neighbors
+                if "<" in card.effect:
+                    score += left_neighbor.count_cards_by_type(card_type)
+                if ">" in card.effect:
+                    score += right_neighbor.count_cards_by_type(card_type)
 
     return score
 

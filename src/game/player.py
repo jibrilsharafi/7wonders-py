@@ -13,7 +13,12 @@ from src.core.constants import (
 from src.core.enums import CARD_TYPE_MAP, RESOURCE_MAP, Action, CardType, Resource
 from src.core.types import Card, Score, Wonder, WonderStage
 from src.game.move import Move
-from src.utils.validators import is_card_present, can_card_be_chained
+from src.utils.validators import (
+    is_card_present,
+    can_card_be_chained,
+    get_left_in_list,
+    get_right_in_list,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +136,9 @@ class Player:
         assert self.can_add_card(
             card
         ), f"Player {self.name} already has card '{card.name}'"
-        logger.debug(f"Player {self.name} added the card '{card.name}'")
+        logger.debug(
+            f"Player {self.name} added the card '{card.name}' ({card.type.name}) with effect '{card.effect}'"
+        )
         self.cards.append(card)
 
     def add_coins(self, amount: int) -> None:
@@ -142,12 +149,14 @@ class Player:
         self.coins += amount
 
     def add_military_tokens(self, amount: int) -> None:
-        logger.debug(f"Player {self.name} got {amount} military tokens")
         self.military_tokens += amount
+        logger.debug(f"Player {self.name} got {amount} military tokens (total: {self.military_tokens})")
 
     def add_stage(self) -> None:
         assert self.stages_built < 3, f"Player {self.name} already built all stages"
-        logger.debug(f"Player {self.name} proudly built stage {self.stages_built + 1}")
+        logger.debug(
+            f"Player {self.name} proudly built stage {self.stages_built + 1} with effect '{self.wonder.stages[self.stages_built].effect}'"
+        )
         self.stages_built += 1
 
     def add_to_hand(self, cards: List[Card]) -> None:
@@ -184,12 +193,10 @@ class Player:
         )
 
     def get_left_neighbor(self, all_players: List["PlayerView"]) -> "PlayerView":
-        index = self.position - 1 if self.position > 0 else len(all_players) - 1
-        return all_players[index]
+        return all_players[get_left_in_list(self.position, len(all_players))]
 
     def get_right_neighbor(self, all_players: List["PlayerView"]) -> "PlayerView":
-        index = self.position + 1 if self.position < len(all_players) - 1 else 0
-        return all_players[index]
+        return all_players[get_right_in_list(self.position, len(all_players))]
 
     def get_neighbors(self, all_players: List["PlayerView"]) -> List["PlayerView"]:
         return [
@@ -421,13 +428,11 @@ class TradeOption:
 
 
 def get_left_neighbor(position: int, all_players: List[Player]) -> Player:
-    index = position - 1 if position > 0 else len(all_players) - 1
-    return all_players[index]
+    return all_players[get_left_in_list(position, len(all_players))]
 
 
 def get_right_neighbor(position: int, all_players: List[Player]) -> Player:
-    index = position + 1 if position < len(all_players) - 1 else 0
-    return all_players[index]
+    return all_players[get_right_in_list(position, len(all_players))]
 
 
 def get_neighbors(position: int, all_players: List[Player]) -> List[Player]:

@@ -9,12 +9,18 @@ def is_card_present(cards: List[Card], card_to_check: Card) -> bool:
 
 
 def can_card_be_chained(cards: List[Card], new_card: Card) -> bool:
-    return bool(any(c.chain_to == new_card.name for c in cards))
+    return bool(any(new_card.name in c.chain_to for c in cards))
 
 
 def drop_duplicates_cards(cards: List[Card]) -> List[Card]:
     """Drop duplicate cards with the same name"""
-    return list({card.name: card for card in cards}.values())
+    seen = set()
+    unique_cards = []
+    for card in cards:
+        if card.name not in seen:
+            unique_cards.append(card)
+            seen.add(card.name)
+    return unique_cards
 
 
 def get_random_cards(
@@ -37,3 +43,11 @@ def get_random_cards(
         cards = drop_duplicates_cards(cards)
 
     return random.sample(cards, n)
+
+def get_left_in_list(index: int, list_length: int) -> int:
+    """Get the left neighbor of an element in a list"""
+    return (index - 1) % list_length
+
+def get_right_in_list(index: int, list_length: int) -> int:
+    """Get the right neighbor of an element in a list"""
+    return (index + 1) % list_length

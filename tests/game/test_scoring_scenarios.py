@@ -38,14 +38,14 @@ def wonders() -> List[Wonder]:
 def babylon_player(wonders: List[Wonder]) -> Player:
     """Player with Babylon wonder (has science symbol in second stage)"""
     babylon = next(w for w in wonders if w.name == "babylon")
-    return Player("babylon_player", 1, babylon, SimpleStrategy())
+    return Player("babylon_player", 0, babylon, SimpleStrategy())
 
 
 @pytest.fixture
 def alexandria_player(wonders: List[Wonder]) -> Player:
     """Player with Alexandria wonder (has resource choice effects)"""
     alexandria = next(w for w in wonders if w.name == "alexandria")
-    return Player("alexandria_player", 2, alexandria, SimpleStrategy())
+    return Player("alexandria_player", 1, alexandria, SimpleStrategy())
 
 
 def test_science_score_with_babylon(babylon_player: Player, cards: List[Card]) -> None:
@@ -56,7 +56,7 @@ def test_science_score_with_babylon(babylon_player: Player, cards: List[Card]) -
         for card in cards
         if card.type == CardType.SCIENTIFIC
         and card.name
-        in ["apothecary", "workshop", "scriptorium", "dispensary", "school"]
+        in ["apothecary", "workshop", "scriptorium", "dispensary", "school"] # scientific
     ]
     # Discard duplicates with the same name
     scientific_cards = drop_duplicates_cards(scientific_cards)
@@ -82,13 +82,13 @@ def test_commercial_score_with_real_cards(
         for card in cards
         if card.name
         in [
-            "haven",
-            "chamber_of_commerce",  # Commercial
-            "lumber_yard",
-            "ore_vein",
-            "clay_pool",  # Raw materials
-            "loom",
-            "glassworks",  # Manufactured goods
+            "haven", # Commercial
+            "chamber_of_commerce", # Commercial
+            "lumber_yard", # Raw materials
+            "ore_vein", # Raw materials
+            "clay_pool", # Raw materials
+            "loom", # Manufactured goods
+            "glassworks", # Manufactured goods
         ]
     ]
 
@@ -97,47 +97,49 @@ def test_commercial_score_with_real_cards(
     for card in relevant_cards:
         babylon_player.add_card(card)
 
+    # Haven: V per raw material, Chamber of Commerce: VV per manufactured good
+    # 1 * 3 + 2 * 2 = 7
     assert calculate_commercial_score(babylon_player) == 7
 
 
 def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) -> None:
     """Test guild scoring with multiple players and different guild types"""
     p1 = Player(
-        "p1", 1, next(w for w in wonders if w.name == "alexandria"), SimpleStrategy()
+        "p1", 0, next(w for w in wonders if w.name == "alexandria"), SimpleStrategy()
     )
     p2 = Player(
-        "p2", 2, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
+        "p2", 1, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
     )
     p3 = Player(
-        "p3", 3, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
+        "p3", 2, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
     )
 
     # Add cards to neighbors
     for card in cards:
         if card.name in [
-            "haven",
-            "chamber_of_commerce",
-            "builders_guild",
-            "philosophers_guild",
-            "decorators_guild",
-        ] and not is_card_present(p1.cards, card.name):
+            "haven",  # Commercial
+            "chamber_of_commerce",  # Commercial
+            "builders_guild",  # Guild
+            "philosophers_guild",  # Guild
+            "decorators_guild",  # Guild
+        ] and not is_card_present(p1.cards, card):
             p1.add_card(card)
         elif card.name in [
-            "library",
-            "laboratory",
-            "study",
-            "altar",
-            "theatre",
-            "craftsmens_guild",
-        ] and not is_card_present(p2.cards, card.name):
+            "library",  # Scientific
+            "laboratory",  # Scientific
+            "study",  # Scientific
+            "altar",  # Civilian
+            "theatre",  # Civilian
+            "craftsmens_guild",  # Guild
+        ] and not is_card_present(p2.cards, card):
             p2.add_card(card)
         elif card.name in [
-            "stockade",
-            "barracks",
-            "lumber_yard",
-            "clay_pool",
-            "shipowners_guild",
-        ] and not is_card_present(p3.cards, card.name):
+            "stockade",  # Military
+            "barracks",  # Military
+            "lumber_yard",  # Raw materials
+            "clay_pool",  # Raw materials
+            "shipowners_guild",  # Guild
+        ] and not is_card_present(p3.cards, card):
             p3.add_card(card)
 
     # Add stages to players
@@ -145,7 +147,7 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
         player.add_stage()
         player.add_stage()
 
-    # Add last stage to p1
+    # Add last stage to p1 (complete wonder)
     p1.add_stage()
 
     assert (
@@ -154,7 +156,7 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
             get_left_neighbor(p1.position, [p1, p2, p3]),
             get_right_neighbor(p1.position, [p1, p2, p3]),
         )
-        == 17
+        == 17 # builders_guild: V per wonder <v> (1 * (3 + 2 + 2)), philosophers_guild: V per science symbol <> (1 * 3), decorators_guild: VVVVVVV per wonders complete (7 * 1)
     )
     assert (
         calculate_guild_score(
@@ -170,7 +172,7 @@ def test_guild_score_complex_scenario(cards: List[Card], wonders: List[Wonder]) 
             get_left_neighbor(p3.position, [p1, p2, p3]),
             get_right_neighbor(p3.position, [p1, p2, p3]),
         )
-        == 3
+        == 3 # shipowners_guild: V per raw material, manufactured good, guild (1 * 3)
     )
 
 
@@ -199,13 +201,13 @@ def test_complete_game_scoring_scenario(
 ) -> None:
     """Test a complete game scoring scenario with multiple players"""
     science_player = Player(
-        "science", 1, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
+        "science", 0, next(w for w in wonders if w.name == "babylon"), SimpleStrategy()
     )
     military_player = Player(
-        "military", 2, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
+        "military", 1, next(w for w in wonders if w.name == "rhodes"), SimpleStrategy()
     )
     civilian_player = Player(
-        "civilian", 3, next(w for w in wonders if w.name == "giza"), SimpleStrategy()
+        "civilian", 2, next(w for w in wonders if w.name == "giza"), SimpleStrategy()
     )
 
     # Set up science player
@@ -243,23 +245,23 @@ def test_complete_game_scoring_scenario(
 
     # Get final scores
     science_score = calculate_total_score(
+        science_player,
         get_left_neighbor(science_player.position, all_players),
         get_right_neighbor(science_player.position, all_players),
-        science_player,
     )
     military_score = calculate_total_score(
+        military_player,
         get_left_neighbor(military_player.position, all_players),
         get_right_neighbor(military_player.position, all_players),
-        military_player,
     )
     civilian_score = calculate_total_score(
+        civilian_player,
         get_left_neighbor(civilian_player.position, all_players),
         get_right_neighbor(civilian_player.position, all_players),
-        civilian_player,
     )
-    logging.info(f"Science player: {science_score}")
-    logging.info(f"Military player: {military_score}")
-    logging.info(f"Civilian player: {civilian_score}")
+    logging.info(f"Science player: {science_score.total} | {science_score}")
+    logging.info(f"Military player: {military_score.total} | {military_score}")
+    logging.info(f"Civilian player: {civilian_score.total} | {civilian_score}")
 
     # Assert general expectations
     assert science_score.scientific > military_score.scientific
